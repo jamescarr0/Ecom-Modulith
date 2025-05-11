@@ -1,0 +1,12 @@
+services:
+  ecomDb:
+    image: postgres
+
+  api:
+    image: ${DOCKER_REGISTRY-}api
+    build:
+      context: .
+      dockerfile: Bootstrapper/Api/Dockerfile
+
+volumes:
+  postgres_ecomDb:    
