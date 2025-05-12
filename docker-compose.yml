@@ -7,6 +7,8 @@ services:
     build:
       context: .
       dockerfile: Bootstrapper/Api/Dockerfile
+    depends_on:
+      - ecomDb
 
 volumes:
   postgres_ecomDb:    
