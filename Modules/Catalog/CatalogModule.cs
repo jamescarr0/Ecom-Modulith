@@ -1,7 +1,9 @@
-﻿using Catalog.Data;
+﻿using System.Reflection;
+using Catalog.Data;
 using Catalog.Data.Seed;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Data;
@@ -14,15 +16,22 @@ public static class CatalogModule
 {
     public static IServiceCollection AddCatalogModule(this IServiceCollection services, IConfiguration configuration)
     {
-        // Add services to the container
-        services.AddScoped<IDbSeeder, CatalogDbSeeder>();
-
-        // Add Data & Infrastructure services
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
-        services.AddDbContext<CatalogDbContext>(o =>
+        // Add application services to the container
+        services.AddMediatR(config =>
         {
+            config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+        });
+
+        // Add Data & Infrastructure services to the container
+        services.AddScoped<IDbSeeder, CatalogDbSeeder>();
+        services.AddScoped<ISaveChangesInterceptor, EntityAuditInterceptor>();
+        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+
+        services.AddDbContext<CatalogDbContext>((sp, o) =>
+        {
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
             o.UseNpgsql(connectionString);
-            o.AddInterceptors(new EntityAuditInterceptor());
+            o.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>()); // Add the interceptors that were registered above as services
         });
 
         return services;

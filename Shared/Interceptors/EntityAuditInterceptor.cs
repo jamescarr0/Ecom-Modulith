@@ -4,6 +4,16 @@ using Shared.DDD;
 
 namespace Shared.Interceptors;
 
+/// <summary>
+/// Prior to saving changes with entity framework.  Check the entity and ensure the following 
+/// audit information is added and/or updated:
+/// - DateTime
+/// - CreatedAt, LastModified
+/// 
+/// - User
+/// - CreatedBy, LastModifiedBy
+/// 
+/// </summary>
 public class EntityAuditInterceptor : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
