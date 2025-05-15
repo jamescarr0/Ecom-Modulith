@@ -5,6 +5,12 @@ using Shared.DDD;
 
 namespace Shared.Interceptors;
 
+/// <summary>
+/// Hooks into the Entity Framework middleware pipeline, gathers domain events **before** saving,
+/// and publishes them via the Mediator pattern.
+/// </summary>
+/// <param name="mediator">The Mediator instance used to publish domain events.</param>
+
 public class DispatchDomainEventsInterceptor(IMediator mediator) : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
