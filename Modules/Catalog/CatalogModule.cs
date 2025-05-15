@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Shared.Data;
 using Shared.Data.Seed;
 using Shared.Interceptors;
+using Shared.Web;
 
 namespace Catalog;
 
@@ -41,6 +42,12 @@ public static class CatalogModule
     {
         // Use Data services
         app.UseMigration<CatalogDbContext>();
+
+        // Register Endpoint Definitions
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.RegisterEndpointDefinitions(typeof(CatalogModule).Assembly);
+        });
 
         return app;
     }
