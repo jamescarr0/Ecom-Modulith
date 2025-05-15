@@ -1,6 +1,5 @@
 ﻿using Catalog.Data;
 using Catalog.Products.Dtos;
-using Catalog.Products.Models;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Shared.CQRS;
