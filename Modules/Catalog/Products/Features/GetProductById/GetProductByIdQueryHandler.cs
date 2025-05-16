@@ -7,23 +7,23 @@ using Shared.CQRS;
 namespace Catalog.Products.Features.GetProductById;
 
 internal record GetProductByIdQuery(Guid ProductId) : IQuery<GetProductByIdResult>;
-internal record GetProductByIdResult(ProductDto Product);
+internal record GetProductByIdResult(ProductDto ProductDto);
 
 internal class GetProductByIdQueryHandler(CatalogDbContext dbContext)
     : IQueryHandler<GetProductByIdQuery, GetProductByIdResult>
 {
     public async Task<GetProductByIdResult> Handle(GetProductByIdQuery query, CancellationToken cancellationToken)
     {
-        var product = await dbContext.Products
+        var productDto = await dbContext.Products
             .AsNoTracking()
-            .SingleOrDefaultAsync(p => p.Id == query.ProductId, cancellationToken: cancellationToken);
+            .Where(p => p.Id == query.ProductId)
+            .ProjectToType<ProductDto>()
+            .SingleOrDefaultAsync(cancellationToken);
 
-        if(product is null)
+        if(productDto is null)
         {
             throw new Exception($"Product not found with Id: {query.ProductId}");
         }
-
-        var productDto = product.Adapt<ProductDto>();
 
         return new GetProductByIdResult(productDto);
     }
