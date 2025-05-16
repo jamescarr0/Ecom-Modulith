@@ -14,22 +14,19 @@ internal record CreateProductResponse(Guid ProductId);
 /// <summary>
 /// Defines the API endpoint for creating a new product.
 /// </summary>
-public class CreateProductEndpoint : IEndpointDefinition
+internal class CreateProductEndpoint : IEndpointDefinition
 {
     public void RegisterEndpoint(IEndpointRouteBuilder endpoint)
     {
-        endpoint.MapPost(ApiRoutes.ProductsBase, async (CreateProductRequest request, ISender sender) =>
+        endpoint.MapPost(ProductApiRoutes.CreateProduct, async (CreateProductRequest request, ISender sender) =>
         {
-            // Map the Product Dto to a Create Product Command which can be consumed by the associated handler
             var command = new CreateProductCommand(request.Product);
 
-            // Send Command via MediatR 
             var result = await sender.Send(command);
 
-            // Map create product result to the create product response
             var response = new CreateProductResponse(result.ProductId);
 
-            return Results.Created($"{ApiRoutes.ProductsBase}/{response.ProductId}", response);
+            return Results.Created($"{ProductApiRoutes.ProductsBase}/{response.ProductId}", response);
         });
     }
 }
