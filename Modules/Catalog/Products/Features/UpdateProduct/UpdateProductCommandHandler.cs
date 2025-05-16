@@ -1,7 +1,7 @@
 ﻿using Catalog.Data;
 using Catalog.Products.Dtos;
 using Catalog.Products.Models;
-using Shared.CQRS;
+using Shared.CQRS.Command;
 
 namespace Catalog.Products.Features.UpdateProduct;
 

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Catalog.Data;
 using Catalog.Data.Seed;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -18,6 +19,7 @@ public static class CatalogModule
     public static IServiceCollection AddCatalogModule(this IServiceCollection services, IConfiguration configuration)
     {
         // Add application services to the container
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddMediatR(config =>
         {
             config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());

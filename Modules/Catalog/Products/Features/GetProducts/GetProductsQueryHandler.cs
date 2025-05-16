@@ -2,7 +2,7 @@
 using Catalog.Products.Dtos;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Shared.CQRS;
+using Shared.CQRS.Query;
 
 namespace Catalog.Products.Features.GetProducts;
 

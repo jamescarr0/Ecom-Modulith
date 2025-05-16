@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Shared.CQRS;
+namespace Shared.CQRS.Command;
 
 public interface ICommand : ICommand<Unit>
 { }
