@@ -8,7 +8,7 @@ namespace Catalog.Products.Features.CreateProduct;
 internal record CreateProductCommand(ProductDto ProductDto)
     : ICommand<CreateProductResult>;
 
-internal record CreateProductResult(Guid Id);
+internal record CreateProductResult(Guid ProductId);
 
 /// <summary>
 /// Create Product Command Handler
