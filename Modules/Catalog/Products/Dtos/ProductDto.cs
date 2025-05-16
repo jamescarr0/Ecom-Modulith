@@ -1,6 +1,6 @@
 ﻿namespace Catalog.Products.Dtos;
 
-internal record ProductDto(
+public record ProductDto(
     Guid Id,
     string Name,
     List<string> Category,

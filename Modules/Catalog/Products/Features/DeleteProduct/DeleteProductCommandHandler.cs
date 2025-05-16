@@ -1,10 +1,20 @@
-﻿using Catalog.Data;
+﻿using System.Data;
+using Catalog.Data;
+using FluentValidation;
 using Shared.CQRS.Command;
 
 namespace Catalog.Products.Features.DeleteProduct;
 
-internal record DeleteProductCommand(Guid ProductId) : ICommand<DeleteProductResult>;
+public record DeleteProductCommand(Guid ProductId) : ICommand<DeleteProductResult>;
 internal record DeleteProductResult(bool IsSuccess);
+
+public class DeleteProductCommandValidator : AbstractValidator<DeleteProductCommand>
+{
+    public DeleteProductCommandValidator()
+    {
+        RuleFor(x => x.ProductId).NotEmpty().WithMessage("Product Id is required");
+    }
+}
 
 internal class DeleteProductCommandHandler(CatalogDbContext dbContext)
     : ICommandHandler<DeleteProductCommand, DeleteProductResult>

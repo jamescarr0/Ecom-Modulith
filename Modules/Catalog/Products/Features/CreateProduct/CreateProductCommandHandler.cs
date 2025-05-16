@@ -4,15 +4,14 @@ using Catalog.Products.Models;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Shared.CQRS.Command;
-using Shared.CQRS.Validation;
 
 namespace Catalog.Products.Features.CreateProduct;
 
-internal record CreateProductCommand(ProductDto ProductDto)
+public record CreateProductCommand(ProductDto ProductDto)
     : ICommand<CreateProductResult>;
 internal record CreateProductResult(Guid ProductId);
 
-internal class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
     public CreateProductCommandValidator()
     {
@@ -28,14 +27,12 @@ internal class CreateProductCommandValidator : AbstractValidator<CreateProductCo
 /// Create Product Command Handler
 /// - Creates the Product Entity and saves to the database
 /// </summary>
-internal class CreateProductCommandHandler(ILogger<CreateProductCommandHandler> logger, CatalogDbContext dbContext, IValidator<CreateProductCommand> validator)
+internal class CreateProductCommandHandler(ILogger<CreateProductCommandHandler> logger, CatalogDbContext dbContext)
     : ICommandHandler<CreateProductCommand, CreateProductResult>
 {
     public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("{Class}.{Method} called with {@Command}", nameof(CreateProductCommandHandler), nameof(Handle), command);
-
-        await ValidationHelper.ValidateCommand(command, validator, cancellationToken);
 
         var product = CreateNewProduct(command.ProductDto);
 

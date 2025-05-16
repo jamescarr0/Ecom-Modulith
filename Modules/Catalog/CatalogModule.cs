@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Behaviours;
 using Shared.Data;
 using Shared.Data.Seed;
 using Shared.Interceptors;
@@ -20,9 +21,11 @@ public static class CatalogModule
     {
         // Add application services to the container
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
         services.AddMediatR(config =>
         {
             config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            config.AddOpenBehavior(typeof(ValidationBehaviour<,>));
         });
 
         // Add Data & Infrastructure services to the container
