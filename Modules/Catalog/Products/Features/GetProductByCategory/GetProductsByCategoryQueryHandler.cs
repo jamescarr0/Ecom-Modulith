@@ -7,7 +7,7 @@ using Shared.CQRS;
 namespace Catalog.Products.Features.GetProductByCategory;
 
 internal record GetProductsByCategoryQuery(string Category) : IQuery<GetProductsByCategoryResult>;
-internal record GetProductsByCategoryResult(IEnumerable<ProductDto> ProductDto);
+internal record GetProductsByCategoryResult(IReadOnlyList<ProductDto> ProductsDtoList);
 
 internal class GetProductsByCategoryQueryHandler(CatalogDbContext dbContext)
     : IQueryHandler<GetProductsByCategoryQuery, GetProductsByCategoryResult>
@@ -17,10 +17,10 @@ internal class GetProductsByCategoryQueryHandler(CatalogDbContext dbContext)
         var productsDto = await dbContext.Products
             .AsNoTracking()
             .Where(p => p.Category.Contains(query.Category))
-            .Select(p => p.Adapt<ProductDto>())
             .OrderBy(p => p.Name)
+            .ProjectToType<ProductDto>()
             .ToListAsync(cancellationToken: cancellationToken);
 
-        return new GetProductsByCategoryResult(productsDto);
+        return new GetProductsByCategoryResult(productsDto.AsReadOnly());
     }
 }
