@@ -1,12 +1,12 @@
-﻿namespace Shared.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
 
-public class NotFoundException : Exception
+namespace Shared.Exceptions;
+
+public class NotFoundException : CustomHttpException
 {
-    public NotFoundException(string message) : base(message)
-    {
-    }
+    const int statusCode = StatusCodes.Status404NotFound;
 
-    public NotFoundException(string name, object key) : base($"Entity \"{name}\" ({key}) was not found")
+    public NotFoundException(string name, object key) : base($"Entity \"{name}\" ({key}) was not found", statusCode)
     {
     }
 }

@@ -1,14 +1,17 @@
-﻿namespace Shared.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
 
-public class BadRequestException : Exception
+namespace Shared.Exceptions;
+
+public class BadRequestException : CustomHttpException
 {
-    public BadRequestException(string message) : base(message)
+    const int statusCode = StatusCodes.Status400BadRequest;
+
+    public BadRequestException(string message) : base(message, statusCode)
     {
     }
-    public BadRequestException(string message, string details) : base(message)
+
+    public BadRequestException(string message, string details) : base(message, statusCode)
     {
         Details = details;
     }
-
-    public string? Details { get; set; }
 }

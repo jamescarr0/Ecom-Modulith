@@ -1,15 +1,19 @@
-﻿namespace Shared.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
 
-public class InternalServerException : Exception
+namespace Shared.Exceptions;
+
+public class InternalServerException : CustomHttpException
 {
-    public InternalServerException(string message) : base(message)
+    const int statusCode = StatusCodes.Status500InternalServerError;
+
+    public InternalServerException(string message) : base(message, statusCode)
     {
+        StatusCode = statusCode;
     }
 
-    public InternalServerException(string message, string details) : base(message)
+    public InternalServerException(string message, string details) : base(message, statusCode)
     {
         Details = details;
+        StatusCode = statusCode;
     }
-
-    public string? Details { get; set; }
 }
