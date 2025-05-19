@@ -1,6 +1,6 @@
 ﻿using Catalog.Data;
 using Catalog.Products.Dtos;
-using Catalog.Products.Features.CreateProduct;
+using Catalog.Products.Exceptions;
 using Catalog.Products.Models;
 using FluentValidation;
 using Shared.CQRS.Command;
@@ -27,13 +27,9 @@ internal class UpdateProductCommandHandler(CatalogDbContext dbContext)
 {
     public async Task<UpdateProductResult> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
     {
-        var product = await dbContext.Products.FindAsync([command.ProductDto.Id], cancellationToken: cancellationToken);
-
-        if (product is null)
-        {
-            throw new Exception($"Product not found with Id: {command.ProductDto.Id}");
-        }
-
+        var product = await dbContext.Products.FindAsync([command.ProductDto.Id], cancellationToken: cancellationToken)
+            ?? throw new ProductNotFoundException(command.ProductDto.Id);
+        
         UpdateProduct(product, command.ProductDto);
 
         dbContext.Products.Update(product);

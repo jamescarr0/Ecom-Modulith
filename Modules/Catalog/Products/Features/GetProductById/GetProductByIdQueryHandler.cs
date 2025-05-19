@@ -1,5 +1,6 @@
 ﻿using Catalog.Data;
 using Catalog.Products.Dtos;
+using Catalog.Products.Exceptions;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Shared.CQRS.Query;
@@ -18,12 +19,8 @@ internal class GetProductByIdQueryHandler(CatalogDbContext dbContext)
             .AsNoTracking()
             .Where(p => p.Id == query.ProductId)
             .ProjectToType<ProductDto>()
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if(productDto is null)
-        {
-            throw new Exception($"Product not found with Id: {query.ProductId}");
-        }
+            .SingleOrDefaultAsync(cancellationToken)
+                ?? throw new ProductNotFoundException(query.ProductId);
 
         return new GetProductByIdResult(productDto);
     }
