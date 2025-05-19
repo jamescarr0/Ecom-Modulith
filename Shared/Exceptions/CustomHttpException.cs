@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,8 @@ public abstract class CustomHttpException : Exception
     public string? Details { get; init; }
     public int StatusCode { get; init; }
 
-    protected CustomHttpException(string message, int statusCode) : base(message) {
+    protected CustomHttpException(string message, int statusCode) : base(message)
+    {
         StatusCode = statusCode;
     }
 
@@ -34,15 +34,28 @@ public abstract class CustomHttpException : Exception
 
         problemDetails.Extensions.Add("traceId", httpContext.TraceIdentifier);
 
-        if(extensions is not null && extensions.Count > 0)
+        if (extensions is not null && extensions.Count > 0)
         {
-            foreach(var kvp in extensions)
+            foreach (var kvp in extensions)
             {
                 problemDetails.Extensions[kvp.Key] = kvp.Value;
             }
         }
 
-        logger.LogError("Exception: {details}", JsonSerializer.Serialize(problemDetails));
+        var logEntry = $"Exception: {JsonSerializer.Serialize(problemDetails)}";
+
+        if (StatusCode == StatusCodes.Status400BadRequest && extensions?.ContainsKey("errors") == true)
+        {
+            logger.LogInformation(logEntry);
+        }
+        else if (StatusCode >= StatusCodes.Status500InternalServerError)
+        {
+            logger.LogError(logEntry);
+        }
+        else
+        {
+            logger.LogWarning(logEntry);
+        }
 
         httpContext.Response.StatusCode = StatusCode;
         httpContext.Response.ContentType = "application/problem+json";
