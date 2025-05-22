@@ -26,6 +26,7 @@ public static class CatalogModule
         {
             config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             config.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+            config.AddOpenBehavior(typeof(LoggingBehaviour<,>));
         });
 
         // Add Data & Infrastructure services to the container

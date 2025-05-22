@@ -27,13 +27,11 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
 /// Create Product Command Handler
 /// - Creates the Product Entity and saves to the database
 /// </summary>
-internal class CreateProductCommandHandler(ILogger<CreateProductCommandHandler> logger, CatalogDbContext dbContext)
+internal class CreateProductCommandHandler(CatalogDbContext dbContext)
     : ICommandHandler<CreateProductCommand, CreateProductResult>
 {
     public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("{Class}.{Method} called with {@Command}", nameof(CreateProductCommandHandler), nameof(Handle), command);
-
         var product = CreateNewProduct(command.ProductDto);
 
         dbContext.Products.Add(product);
